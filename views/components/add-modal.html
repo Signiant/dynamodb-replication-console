@@ -1,0 +1,24 @@
+<div class="modal-header modal-add">
+  <span class="modal-icon fa fa-plus"></span><span>Add</span>
+  <button type="button" class="close" ng-click="cancel()" aria-label="Close" ng-disabled="waiting">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <double-bounce loading="waiting"></double-bounce>
+  <div ng-show="hasError" class="alert alert-danger" shake-it>
+    {{ errorMessage }}
+  </div>
+  <form name="add" class="modal-form" shake-it>
+    <fieldset class="form-group">
+      <label for="item">Name</label>
+      <input ng-disabled="waiting" type="text" ng-model="item" class="form-control" id="item">
+    </fieldset>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-danger" ng-click="cancel()" ng-disabled="waiting">Cancel</button>
+  <button type="submit" class="btn btn-success" ng-click="addItem()" ng-disabled="waiting">Submit</button>
+</div>

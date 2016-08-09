@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en-US" ng-app="replicationConsole" ng-controller="MainController">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Console page for managing the dynamodb replication solution">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Replication Console</title>
+
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/stylesheet.css" />
+    <link rel="stylesheet" ng-href="assets/css/skins/{{ skin }}.css" />
+
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="node_modules/angular/angular.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="node_modules/angular-utils-pagination/dirPagination.js"></script>
+    <script src="node_modules/angular-resource/angular-resource.js"></script>
+    <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js"></script>
+    <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+    <script src="node_modules/angular-route/angular-route.js"></script>
+    <script src="node_modules/angular-animate/angular-animate.js"></script>
+    <script src="app/app.js"></script>
+    <script src="app/config.js"></script>
+    <script src="app/directives/double-bounce.js"></script>
+    <script src="app/directives/stat.js"></script>
+    <script src="app/directives/shake.js"></script>
+    <script src="app/controllers/MainController.js"></script>
+    <script src="app/controllers/TableController.js"></script>
+    <script src="app/controllers/MetricController.js"></script>
+    <script src="app/controllers/MetricTableController.js"></script>
+    <script src="app/controllers/ModalController.js"></script>
+  </head>
+  <body>
+    <div id="page-wrapper" ng-class="{ 'open': toggle }" ng-cloak>
+
+      <!-- Collapsing sidebar -->
+      <div id="sidebar-wrapper">
+        <ul class="sidebar">
+          <li class="sidebar-main">
+            <a ng-click="toggle=!toggle">
+              Dashboard <span class="menu-icon glyphicon glyphicon-transfer"></span>
+            </a>
+          </li>
+          <li class="sidebar-title">
+            NAVIGATION
+          </li>
+          <li class="sidebar-list">
+            <a href="#/">Manage <span class="menu-icon fa fa-pencil"></span></a>
+          </li>
+          <li class="sidebar-footer">
+            <a href="https://github.com/Signiant/dynamodb-replicator">Github <i class="menu-icon fa fa-github"></i></a>
+          </li>
+        </ul>
+      </div>
+
+      <div id="content-wrapper">
+        <!-- Header nav -->
+        <div class="row header">
+          <div class="meta">
+            <div class="header-title" ng-click="randomSkin()">
+              Replication Console
+            </div>
+
+            <div class="page">{{ page }}</div>
+          </div>
+        </div>
+
+        <!-- View content -->
+        <div class="content" ng-view></div>
+
+      </div>
+    </div>
+  </body>
+</html>

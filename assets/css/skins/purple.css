@@ -1,0 +1,10 @@
+ul.sidebar .sidebar-list a:hover,
+#page-wrapper:not(.open) ul.sidebar .sidebar-list a:hover span {
+    border-left: 3px solid #605ca8;
+}
+.row.header{
+    background: #605ca8;
+}
+ul.sidebar .sidebar-main{
+    background-color: #555299;
+}

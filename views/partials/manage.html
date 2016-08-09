@@ -1,0 +1,176 @@
+<div class="row">
+
+  <div class="col-xs-12 col-sm-6 col-md-4">
+    <stat title="Replicated Tables" footer="Total" color="teal" icon="fa-clone">
+      <div class="stat-value" ng-controller="TableController" path="replications" >
+        <div ng-if="!tableLoading">{{ tableCount }}</div>
+        <div ng-if="tableLoadingFailed" class="error">:(</div>
+        <div class="stat-loader" ng-if="tableLoading" loading="tableLoading" double-bounce></div>
+      </div>
+    </stat>
+  </div><!-- /col -->
+
+  <div class="col-xs-12 col-sm-6 col-md-4">
+    <stat title="Items Processed" footer="Past 14 days" color="green" icon="fa-pencil-square-o">
+      <div class="metric-stat" ng-controller="MetricController" metric="RecordsProcessed" statistic="Sum">
+        <div ng-if="!metricLoading" >{{ value }}</div>
+        <div ng-if="metricLoadingFailed" class="error">:(</div>
+        <div class="stat-loader" ng-if="metricLoading" loading="metricLoading" double-bounce></div>
+      </div>
+  </div><!-- /col -->
+
+  <div class="col-xs-12 col-sm-6 col-md-4">
+    <stat title="Max Minutes Behind" footer="Past 14 days" color="red" icon="fa-exclamation">
+      <div class="metric-stat" ng-controller="MetricController" metric="MinutesBehind" statistic="Maximum">
+        <div ng-if="!metricLoading" >{{ value }}</div>
+        <div ng-if="metricLoadingFailed" class="error">:(</div>
+       <div class="stat-loader" ng-if="metricLoading" loading="metricLoading" double-bounce></div>
+      </div>
+    </stat>
+  </div><!-- /col -->
+
+</div><!-- /row -->
+
+<div class="row">
+
+  <div class="col-md-12" >
+    <div class="table-wrapper top-success" ng-controller="TableController" path="replications">
+      <div class="table-header">
+        <div class="table-title">Replications</div>
+        <div class="table-add pull-right" ng-if="!tableLoading && !tableLoadingFailed" ng-click="triggerAdd()"><i class="fa fa-plus"></i></div>
+      </div>
+      <div class="table-body">
+        <double-bounce loading="tableLoading"></double-bounce>
+
+        <div class="row" ng-hide="tableLoading">
+          <div class="error-message" ng-show="tableLoadingFailed">
+            <div class="error">:(</div>
+            {{errorMessage}}
+          </div>
+          <table ng-hide="tableLoadingFailed" class="table table-bordered">
+            <thead>
+              <tr>
+                <th ng-click="sort('tableName')">Table
+                  <span class="fa sort-icon" ng-show="sortKey=='tableName'" ng-class="{'fa-chevron-up': !reverse, 'fa-chevron-down': reverse}"></span>
+                </th>
+                <th ng-click="sort('step')">Step
+                  <span class="fa sort-icon" ng-show="sortKey=='step'" ng-class="{'fa-chevron-up': !reverse, 'fa-chevron-down': reverse}"></span>
+                </th>
+                <th ng-click="sort('state')">State
+                  <span class="fa sort-icon" ng-show="sortKey=='state'" ng-class="{'fa-chevron-up': !reverse, 'fa-chevron-down': reverse}"></span>
+                </th>
+                <th ng-click="sort('stateMessage')" colspan="2">Reason
+                  <span class="fa sort-icon" ng-show="sortKey=='stateMessage'" ng-class="{'fa-chevron-up': !reverse, 'fa-chevron-down': reverse}"></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text"  class="table-filter" ng-model="search.tableName" placeholder="Filter" /></td>
+                <td><input type="text"  class="table-filter" ng-model="search.step" placeholder="Filter" /></td>
+                <td><input type="text"  class="table-filter" ng-model="search.state" placeholder="Filter" /></td>
+                <td colspan="2"><input type="text"  class="table-filter" ng-model="search.stateMessage" placeholder="Filter" /></td>
+              </tr>
+              <tr class="table-row with-delete"  dir-paginate="table in tableData | filter: search | orderBy:sortKey:reverse | itemsPerPage:5" pagination-id="path">
+                <td>{{ table.tableName }}</td>
+                <td>{{ table.step }}</td>
+                <td><span class="label" ng-class="getStateLabel(table.state)">{{ table.state }}</span></td>
+                <td>{{ table.stateMessage }}</td>
+                <td><i class="fa fa-times table-delete" ng-click="triggerDelete(table.tableName)" ng-if="table.tableName && (table.step != 'STOP_REPLICATION' || table.state == 'FAILED')"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="table-footer" ng-hide="tableLoading || tableLoadingFailed">
+        <dir-pagination-controls class="pagination pagination-wrapper" max-size="5" direction-link="true" pagination-id="path"></dir-pagination-controls>
+      </div>
+    </div>
+  </div><!-- /col -->
+
+</div><!-- /row -->
+
+<div class="row">
+  <div class="col-xs-12 col-md-6">
+    <div class="table-wrapper top-danger" ng-controller="MetricTableController" metric="MinutesBehindRecord" period="60" count="1" statistic="Maximum" path="replications">
+      <div class="table-header">
+        <div class="table-title">Delay</div>
+      </div>
+      <div class="table-body">
+        <double-bounce loading="tableLoading"></double-bounce>
+        <div class="row" ng-hide="tableLoading">
+          <div class="error-message" ng-show="tableLoadingFailed">
+            <div class="error">:(</div>
+            {{errorMessage}}
+          </div>
+          <table class="table table-bordered" ng-hide="tableLoadingFailed">
+            <thead>
+              <tr>
+                <th ng-click="sort('tableName')">Table
+                  <span class="fa sort-icon" ng-show="sortKey=='tableName'" ng-class="{'fa-chevron-up': !reverse, 'fa-chevron-down': reverse}"></span>
+                </th>
+                <th ng-click="sort('metric')">Minutes Behind
+                  <span class="fa sort-icon" ng-show="sortKey=='metric'" ng-class="{'fa-chevron-up': !reverse, 'fa-chevron-down': reverse}"></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text" class="table-filter" ng-model="search.tableName" placeholder="Filter" /></td>
+                <td><input type="text" class="table-filter" ng-model="search.metric" placeholder="Filter" /></td>
+              </tr>
+              <tr class="table-row " dir-paginate="table in metricTableData | filter:search | orderBy:sortKey:reverse | itemsPerPage: 5" pagination-id="delay">
+                <td>{{ table.tableName }}</td>
+                <td ng-if="table.hasOwnProperty('metric')">{{ table.metric }}</td>
+                <td ng-if="!table.hasOwnProperty('metric')"> <i class="fa fa-spinner fa-spin"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="table-footer" ng-hide="tableLoading || tableLoadingFailed">
+        <dir-pagination-controls class="pagination pagination-wrapper" max-size="5" direction-link="true" pagination-id="delay"></dir-pagination-controls>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="col-xs-12 col-md-6" >
+    <div class="table-wrapper top-success" ng-controller="TableController" path="prefixes">
+      <div class="table-header">
+        <div class="table-title">Prefixes</div>
+        <div ng-if="!tableLoading && !tableLoadingFailed" class="table-add pull-right" ng-click="triggerAdd()"><i class="fa fa-plus"></i></div>
+      </div>
+      <div class="table-body">
+        <double-bounce loading="tableLoading"></double-bounce>
+
+        <div class="row" ng-hide="tableLoading">
+          <div class="error-message" ng-show="tableLoadingFailed">
+            <div class="error">:(</div>
+            {{errorMessage}}
+          </div>
+          <table ng-hide="tableLoadingFailed" class="table table-bordered">
+            <thead>
+            <tr>
+              <th colspan="2">Prefix</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td colspan="2"><input type="text"  class="table-filter" ng-model="search.prefix" placeholder="Filter" /></td>
+            </tr>
+            <tr class="table-row with-delete" dir-paginate="table in tableData | filter: search | itemsPerPage:5" pagination-id="path">
+              <td>{{ table.prefix }}</td>
+              <td><i class="fa fa-times table-delete" ng-click="triggerDelete(table.prefix)"></i></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="table-footer" ng-hide="tableLoading || tableLoadingFailed">
+        <dir-pagination-controls class="pagination pagination-wrapper" max-size="5" direction-link="true" pagination-id="path"></dir-pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>

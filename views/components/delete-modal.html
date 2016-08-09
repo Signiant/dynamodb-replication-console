@@ -1,0 +1,19 @@
+<div class="modal-header modal-delete">
+  <span class="modal-icon fa fa-question-circle"></span><span>Confirmation</span>
+  <button type="button" class="close" ng-click="cancel()" aria-label="Close" ng-disabled="waiting">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <double-bounce loading="waiting"></double-bounce>
+  <div ng-show="hasError" class="alert alert-danger" shake-it>
+    {{ errorMessage }}
+  </div>
+  <h4>Remove item <i>{{ item }}</i>?</h4>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn" ng-click="cancel()" ng-disabled="waiting">Cancel</button>
+  <button type="button" class="btn btn-danger" ng-click="deleteItem()" ng-disabled="waiting">Delete</button>
+</div>
