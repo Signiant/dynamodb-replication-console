@@ -1,19 +1,11 @@
 angular.module('replicationConsole').controller('MetricTableController', ['$scope', '$attrs', '$controller', function($scope, $attrs, $controller){
-  //Initialize scope
-  $scope.interval = $attrs.interval || 90000;
 
   //This controller extends TableController
   angular.extend(this, $controller('TableController', {$scope: $scope, $attrs: $attrs}));
 
-  //Return an object from an array of tableData (tableName: metric)
-  $scope.tableDataToMap = function(tableData){
-    if(!tableData)
-      tableData = [];
-
-    return tableData.reduce(function(map, item){
-      map[item.tableName] = item.metric;
-      return map;
-    }, {});
+  $scope.triggerRefresh = function(){
+    $scope.tableLoading = true;
+    $scope.getTableData();
   };
 
   //When tableData is refreshed(in child scope), replace metricTableData after fetching metrics
@@ -23,16 +15,8 @@ angular.module('replicationConsole').controller('MetricTableController', ['$scop
     if(!newItem && !oldItem)
       return;
 
-    //Retrieve current table data mapped to an object as tableName:metric
-    var oldMetrics = $scope.tableDataToMap(oldItem);
-
     //Initialize new table list before populating model
     newItem.forEach(function(table){
-
-      //If table had metric data in previous list, set metric data in new list
-      if(oldMetrics.hasOwnProperty(table.tableName)){
-        table.metric = oldMetrics[table.tableName];
-      }
 
       //Create a new child scope for the MetricController
       var itemScope = $scope.$new(false);

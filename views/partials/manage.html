@@ -1,7 +1,7 @@
 <div class="row">
 
   <div class="col-xs-12 col-sm-6 col-md-4">
-    <stat title="Replicated Tables" footer="Total" color="teal" icon="fa-clone">
+    <stat title="Replicated Tables" footer="Total" color="aqua" icon="fa-clone">
       <div class="stat-value" ng-controller="TableController" path="replications" >
         <div ng-if="!tableLoading">{{ tableCount }}</div>
         <div ng-if="tableLoadingFailed" class="error">:(</div>
@@ -11,7 +11,17 @@
   </div><!-- /col -->
 
   <div class="col-xs-12 col-sm-6 col-md-4">
-    <stat title="Items Processed" footer="Past 14 days" color="green" icon="fa-pencil-square-o">
+    <stat title="Prefixes" footer="Total" color="green" icon="fa-eye">
+      <div class="stat-value" ng-controller="TableController" path="prefixes">
+        <div ng-if="!tableLoading" >{{ tableCount }}</div>
+        <div ng-if="tableLoadingFailed" class="error">:(</div>
+       <div class="stat-loader" ng-if="tableLoading" loading="tableLoading" double-bounce></div>
+      </div>
+    </stat>
+  </div><!-- /col -->
+
+  <div class="col-xs-12 col-sm-6 col-md-4">
+    <stat title="Items Processed" footer="Past 14 days" color="red" icon="fa-pencil-square-o">
       <div class="metric-stat" ng-controller="MetricController" metric="RecordsProcessed" statistic="Sum">
         <div ng-if="!metricLoading" >{{ value }}</div>
         <div ng-if="metricLoadingFailed" class="error">:(</div>
@@ -19,22 +29,14 @@
       </div>
   </div><!-- /col -->
 
-  <div class="col-xs-12 col-sm-6 col-md-4">
-    <stat title="Max Minutes Behind" footer="Past 14 days" color="red" icon="fa-exclamation">
-      <div class="metric-stat" ng-controller="MetricController" metric="MinutesBehind" statistic="Maximum">
-        <div ng-if="!metricLoading" >{{ value }}</div>
-        <div ng-if="metricLoadingFailed" class="error">:(</div>
-       <div class="stat-loader" ng-if="metricLoading" loading="metricLoading" double-bounce></div>
-      </div>
-    </stat>
-  </div><!-- /col -->
+
 
 </div><!-- /row -->
 
 <div class="row">
 
   <div class="col-md-12" >
-    <div class="table-wrapper top-success" ng-controller="TableController" path="replications">
+    <div class="table-wrapper top-info" ng-controller="TableController" path="replications">
       <div class="table-header">
         <div class="table-title">Replications</div>
         <div class="table-add pull-right" ng-if="!tableLoading && !tableLoadingFailed" ng-click="triggerAdd()"><i class="fa fa-plus"></i></div>
@@ -91,50 +93,6 @@
 </div><!-- /row -->
 
 <div class="row">
-  <div class="col-xs-12 col-md-6">
-    <div class="table-wrapper top-danger" ng-controller="MetricTableController" metric="MinutesBehindRecord" period="60" count="1" statistic="Maximum" path="replications">
-      <div class="table-header">
-        <div class="table-title">Delay</div>
-      </div>
-      <div class="table-body">
-        <double-bounce loading="tableLoading"></double-bounce>
-        <div class="row" ng-hide="tableLoading">
-          <div class="error-message" ng-show="tableLoadingFailed">
-            <div class="error">:(</div>
-            {{errorMessage}}
-          </div>
-          <table class="table table-bordered" ng-hide="tableLoadingFailed">
-            <thead>
-              <tr>
-                <th ng-click="sort('tableName')">Table
-                  <span class="fa sort-icon" ng-show="sortKey=='tableName'" ng-class="{'fa-chevron-up': !reverse, 'fa-chevron-down': reverse}"></span>
-                </th>
-                <th ng-click="sort('metric')">Minutes Behind
-                  <span class="fa sort-icon" ng-show="sortKey=='metric'" ng-class="{'fa-chevron-up': !reverse, 'fa-chevron-down': reverse}"></span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><input type="text" class="table-filter" ng-model="search.tableName" placeholder="Filter" /></td>
-                <td><input type="text" class="table-filter" ng-model="search.metric" placeholder="Filter" /></td>
-              </tr>
-              <tr class="table-row " dir-paginate="table in metricTableData | filter:search | orderBy:sortKey:reverse | itemsPerPage: 5" pagination-id="delay">
-                <td>{{ table.tableName }}</td>
-                <td ng-if="table.hasOwnProperty('metric')">{{ table.metric }}</td>
-                <td ng-if="!table.hasOwnProperty('metric')"> <i class="fa fa-spinner fa-spin"></i></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="table-footer" ng-hide="tableLoading || tableLoadingFailed">
-        <dir-pagination-controls class="pagination pagination-wrapper" max-size="5" direction-link="true" pagination-id="delay"></dir-pagination-controls>
-      </div>
-
-    </div>
-  </div>
-
 
   <div class="col-xs-12 col-md-6" >
     <div class="table-wrapper top-success" ng-controller="TableController" path="prefixes">
@@ -172,5 +130,49 @@
         <dir-pagination-controls class="pagination pagination-wrapper" max-size="5" direction-link="true" pagination-id="path"></dir-pagination-controls>
       </div>
     </div>
-  </div>
-</div>
+  </div><!-- /col -->
+
+  <div class="col-xs-12 col-md-6">
+    <div class="table-wrapper top-danger" ng-controller="MetricTableController" refresh="false" metric="MinutesBehindRecord" period="60" count="1" statistic="Maximum" path="replications">
+      <div class="table-header">
+        <div class="table-title">Delay</div>
+        <div class="table-refresh pull-right" ng-if="!tableLoading && !tableLoadingFailed" ng-click="triggerRefresh()"><i class="fa fa-refresh"></i></div>
+      </div>
+      <div class="table-body">
+        <double-bounce loading="tableLoading"></double-bounce>
+        <div class="row" ng-hide="tableLoading">
+          <div class="error-message" ng-show="tableLoadingFailed">
+            <div class="error">:(</div>
+            {{errorMessage}}
+          </div>
+          <table class="table table-bordered" ng-hide="tableLoadingFailed">
+            <thead>
+              <tr>
+                <th ng-click="sort('tableName')">Table
+                  <span class="fa sort-icon" ng-show="sortKey=='tableName'" ng-class="{'fa-chevron-up': !reverse, 'fa-chevron-down': reverse}"></span>
+                </th>
+                <th ng-click="sort('metric')">Minutes Behind
+                  <span class="fa sort-icon" ng-show="sortKey=='metric'" ng-class="{'fa-chevron-up': !reverse, 'fa-chevron-down': reverse}"></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text" class="table-filter" ng-model="search.tableName" placeholder="Filter" /></td>
+                <td><input type="text" class="table-filter" ng-model="search.metric" placeholder="Filter" /></td>
+              </tr>
+              <tr class="table-row " dir-paginate="table in metricTableData | filter:search | orderBy:sortKey:reverse | itemsPerPage: 5" pagination-id="delay">
+                <td>{{ table.tableName }}</td>
+                <td ng-if="table.hasOwnProperty('metric')">{{ table.metric }}</td>
+                <td ng-if="!table.hasOwnProperty('metric')"> <i class="fa fa-spinner fa-spin"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="table-footer" ng-hide="tableLoading || tableLoadingFailed">
+        <dir-pagination-controls class="pagination pagination-wrapper" max-size="5" direction-link="true" pagination-id="delay"></dir-pagination-controls>
+      </div>
+    </div>
+  </div><!-- /col -->
+</div><!-- /row -->
