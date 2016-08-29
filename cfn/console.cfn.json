@@ -1,0 +1,65 @@
+{
+  "Parameters": {
+    "BucketName": {
+      "Type": "String",
+      "Description": "Name of the s3 bucket",
+      "AllowedPattern": "^[[a-z0-9]+[\\-\\.]]*[a-z0-9]$",
+      "MinLength": "3",
+      "MaxLength": "63"
+    },
+    "AllowedIps": {
+      "Type": "CommaDelimitedList",
+      "Description": "OPTIONAL - Comma delimited list of IP addresses - Restricts access to the s3 static website"
+    }
+  },
+  "Conditions": {
+    "RestrictBucket": { "Fn::Not": [ { "Fn::Equals": [ { "Fn::Join": [ "", { "Ref": "AllowedIps" } ] }, "" ] } ] }
+  },
+  "Resources": {
+    "ConsoleBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": { "Ref": "BucketName" },
+        "WebsiteConfiguration": {
+            "IndexDocument": "index.html"
+        }
+      }
+    },
+    "ConsoleBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": { "Ref": "ConsoleBucket" },
+        "PolicyDocument": {
+        	"Version": "2012-10-17",
+        	"Statement": [
+        		{
+        			"Sid": "PublicReadGetObject",
+        			"Effect": "Allow",
+        			"Principal": "*",
+        			"Action": "s3:GetObject",
+        			"Resource": "arn:aws:s3:::endeavour-replication-console/*",
+        			"Condition": {
+                "Fn::If": [
+                  "RestrictBucket",
+                  {
+          				  "IpAddress": {
+          					  "aws:SourceIp": { "Ref": "AllowedIps" }
+          				  }
+                  },
+                  { "Ref": "AWS::NoValue" }
+                ]
+        			}
+        		}
+        	]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "Url": {
+      "Description": "Replication console url",
+      "Value": { "Fn::GetAtt": [ "ConsoleBucket", "WebsiteURL" ]}
+    }
+  }
+
+}
