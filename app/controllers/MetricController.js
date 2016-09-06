@@ -67,7 +67,7 @@ angular.module('replicationConsole').controller('MetricController', [ '$scope', 
       $scope.all = response['Datapoints'];
       $scope.sum = $scope.getSum();
       $scope.maximum = $scope.getMaximum();
-      $scope.value = $scope[$scope.statistic.toLowerCase()];
+      $scope.value = $scope[$scope.statistic.toLowerCase()].toLocaleString();
     }
     $scope.metricLoading = false;
   }
