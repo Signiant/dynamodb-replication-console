@@ -43,3 +43,4 @@ dynamodb-replication-console $ aws s3 sync . s3://<YOUR_BUCKET_NAME>
 ## TODO
 - Authentication  
 - Individual replication metrics
+- update angular js library from 1.5.7 to latest causes display issues to the console. More work is needed to resolve this issue.
